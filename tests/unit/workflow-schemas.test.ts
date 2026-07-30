@@ -21,8 +21,9 @@ describe("approval and audit boundaries", () => {
       sources: [],
       facts: [],
       findings: [{
-        id: "finding-1", dealId: "deal-1", category: "scope", severity: "warning", state: "unresolved",
-        summary: "Unknown dependency", citations: [{ id: "cite-1", sourceId: "source-1", location: { section: "Scope", jsonPointer: "/scope", excerpt: "Unknown" } }],
+        id: "finding-1", dealId: "deal-1", category: "scope", severity: "warning", workstream: "scope", state: "unresolved",
+        summary: "Unknown dependency", explanation: "Required dependency is not confirmed.", recommendedNextAction: "Confirm the dependency.",
+        citations: [{ id: "cite-1", sourceId: "source-1", location: { section: "Scope", jsonPointer: "/scope", excerpt: "Unknown" } }],
         relatedFactIds: ["missing-fact"],
       }],
       readiness: [], clarificationTasks: [], decisions: [], approvedOutputs: [], promptRuns: [],

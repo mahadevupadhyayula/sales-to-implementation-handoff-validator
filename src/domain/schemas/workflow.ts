@@ -5,9 +5,12 @@ import { citationSchema, epistemicStateSchema } from "./evidence.js";
 export const findingSchema = z.object({
   id: identifierSchema, dealId: identifierSchema,
   category: identifierSchema,
-  severity: z.enum(["info", "warning", "blocker"]),
+  severity: z.enum(["critical", "high", "medium", "low", "info", "warning", "blocker"]),
+  workstream: z.enum(["scope", "technical", "security", "data", "delivery", "governance"]),
   state: epistemicStateSchema,
   summary: nonEmptyTextSchema,
+  explanation: nonEmptyTextSchema,
+  recommendedNextAction: nonEmptyTextSchema,
   citations: z.array(citationSchema).min(1, "Every finding requires evidence"),
   relatedFactIds: z.array(identifierSchema).default([]),
 });
