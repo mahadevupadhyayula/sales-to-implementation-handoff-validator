@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceId": "src-executed-order-form",
+  "dealId": "deal-nhl-2027-001",
+  "sourceType": "executed_commercial_document",
+  "title": "Executed order form and SOW excerpt",
+  "synthetic": true,
+  "version": "executed-2027-01-12",
+  "recordedAt": "2027-01-12T16:20:00Z",
+  "recordedBy": { "name": "Tomas Venn", "role": "Deal Desk Specialist", "organization": "Cindercone Systems (fictional)" },
+  "content": {
+    "executionStatus": "Executed",
+    "effectiveDate": "2027-01-15",
+    "servicesStartDate": "2027-02-15",
+    "initialTermEndDate": "2029-01-14",
+    "feesUsd": { "subscription": 390000, "implementation": 96000 },
+    "includedServices": [
+      "OrbitSignal Enterprise tenant configuration",
+      "FleetAxis batch import using vendor standard connector",
+      "ClearLedger nightly export",
+      "Two administrator enablement sessions",
+      "Production launch support"
+    ],
+    "excludedServices": [
+      "Custom API or middleware development",
+      "Historical data cleansing",
+      "Twenty-four-hour support coverage"
+    ],
+    "milestones": [
+      { "name": "Discovery complete", "dueDate": "2027-03-05" },
+      { "name": "Configuration complete", "dueDate": "2027-04-09" },
+      { "name": "Production launch", "dueDate": "2027-05-31" }
+    ],
+    "acceptance": {
+      "mechanism": "Customer will review each milestone deliverable.",
+      "criteria": null,
+      "reviewPeriodBusinessDays": null
+    },
+    "signatories": [
+      "Sable Hart — Chief Revenue Officer, Cindercone Systems",
+      "Inez Marlow — VP, Network Operations, Northstar Harbor Logistics"
+    ]
+  }
+}

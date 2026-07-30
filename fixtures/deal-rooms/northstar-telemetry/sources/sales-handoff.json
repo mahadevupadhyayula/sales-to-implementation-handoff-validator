@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceId": "src-sales-handoff",
+  "dealId": "deal-nhl-2027-001",
+  "sourceType": "sales_handoff_note",
+  "title": "Sales-to-implementation handoff note",
+  "synthetic": true,
+  "version": "handoff-1",
+  "recordedAt": "2027-01-13T14:00:00Z",
+  "recordedBy": { "name": "Mira Solen", "role": "Account Executive", "organization": "Cindercone Systems (fictional)" },
+  "content": {
+    "dealSummary": "Strategic lighthouse account; verbally targeting a February 1 kickoff and April 15 launch.",
+    "customerTeam": [
+      "Inez Marlow — executive sponsor",
+      "Pavel Nix — technical contact"
+    ],
+    "implementationOwner": "TBD after kickoff",
+    "commitments": [
+      "Five years of historical shipment data will be available for launch.",
+      "DockPulse alerts can be included alongside the two contracted integrations.",
+      "Near-real-time FleetAxis sync should work with the standard connector.",
+      "Vendor team will provide 24/7 launch-week coverage."
+    ],
+    "risks": ["Customer team is busy during quarter close; keep workshops lightweight."],
+    "recommendedDecision": "Accept — straightforward standard deployment."
+  }
+}

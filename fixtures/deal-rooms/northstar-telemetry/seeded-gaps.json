@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1.0.0",
+  "scenarioId": "northstar-telemetry",
+  "purpose": "Authoring index only; expected-findings.json contains the complete evidence mapping.",
+  "seededFindingIds": [
+    "FND-001",
+    "FND-002",
+    "FND-003",
+    "FND-004",
+    "FND-005",
+    "FND-006",
+    "FND-007",
+    "FND-008",
+    "FND-009",
+    "FND-010",
+    "FND-011",
+    "FND-012"
+  ]
+}
