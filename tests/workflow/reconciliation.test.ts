@@ -63,6 +63,19 @@ describe("telemetry ingestion to deterministic finding generation", () => {
     expect(reconcileTelemetryFixture(mutated).findings.some(({ id }) => id === "fnd-006")).toBe(false);
   });
 
+  it("quotes the resolved source value when a fact differs from a seeded rule value", async () => {
+    const bundle = await loadTelemetryFixture(fixtureDirectory);
+    const mutated = structuredClone(bundle);
+    const crm = mutated.sources.find(({ sourceId }) => sourceId === "src-crm-opportunity")!;
+    crm.content.targetKickoffDate = "2027-03-01";
+
+    const result = reconcileTelemetryFixture(mutated);
+    const fact = result.facts.find(({ id }) => id === "fact-fnd-001-1");
+    expect(fact?.value).toBe("2027-03-01");
+    expect(fact?.citations[0]?.location.excerpt).toBe("2027-03-01");
+    expect(result.findings.some(({ id }) => id === "fnd-001")).toBe(false);
+  });
+
   it("publishes a stable strongest-to-weakest authority order", () => {
     expect(reconciliationAuthorityOrder[0]).toBe("executed_commercial_document");
     expect(reconciliationAuthorityOrder.at(-1)).toBe("sales_handoff_note");

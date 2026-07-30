@@ -53,8 +53,15 @@ describe("approval and audit boundaries", () => {
   });
 
   it("requires failures or parsed outputs according to prompt status", () => {
-    const base = { id: "run-1", dealId: "deal-1", promptId: "extract-facts", promptVersion: "1.0.0", adapterMode: "mock", model: "deterministic-mock-v1", inputReference: "fixture:deal-1", startedAt: "2026-06-01T12:00:00Z", completedAt: "2026-06-01T12:00:01Z" };
+    const base = {
+      id: "run-1", dealId: "deal-1", promptId: "extract-facts", promptVersion: "1.0.0",
+      adapterMode: "mock", model: "deterministic-mock-v1", modelSettings: { temperature: 0 },
+      fixtureVersion: "fixture@1.0.0", inputReference: "fixture:deal-1",
+      startedAt: "2026-06-01T12:00:00Z", completedAt: "2026-06-01T12:00:01Z",
+    };
     expect(promptRunAuditSchema.safeParse({ ...base, status: "succeeded" }).success).toBe(false);
-    expect(promptRunAuditSchema.safeParse({ ...base, status: "failed", failure: "schema validation failed" }).success).toBe(true);
+    expect(promptRunAuditSchema.safeParse({
+      ...base, status: "failed", validationResult: "invalid", failure: "schema validation failed",
+    }).success).toBe(true);
   });
 });

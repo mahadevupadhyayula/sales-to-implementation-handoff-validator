@@ -188,14 +188,20 @@ function displayValue(value: unknown): string {
   return typeof value === "string" ? value : String(value);
 }
 
-function citation(ruleId: string, index: number, requirement: EvidenceRequirement, source: TelemetrySource): Citation {
+function citation(
+  ruleId: string,
+  index: number,
+  requirement: EvidenceRequirement,
+  source: TelemetrySource,
+  excerpt = requirement.expected,
+): Citation {
   return {
     id: `cite-${ruleId}-${index + 1}`,
     sourceId: source.sourceId,
     location: {
       section: source.title,
       jsonPointer: requirement.pointer,
-      excerpt: requirement.expected,
+      excerpt,
     },
   };
 }
@@ -220,7 +226,7 @@ export function reconcileTelemetryFixture(bundle: TelemetryFixtureBundle): Recon
       field: requirement.pointer,
       value: resolved.value,
       state: rule.state,
-      citations: [citation(rule.id, index, requirement, source)],
+      citations: [citation(rule.id, index, requirement, source, displayValue(resolved.value))],
       extractedAt: bundle.manifest.asOf,
     });
   }).filter((fact): fact is ExtractedFact => fact !== undefined));

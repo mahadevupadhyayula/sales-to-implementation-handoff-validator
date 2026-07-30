@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1.0.0",
+  "promptId": "implementation.evidence-extraction",
+  "promptVersion": "1.0.0",
+  "fixtureDirectory": "fixtures/deal-rooms/northstar-telemetry",
+  "synthetic": true,
+  "reviewCriteria": {
+    "minimumExtractedEvidence": 2,
+    "minimumClarificationQuestions": 2,
+    "requiredUncertaintyTopics": ["Accountable customer implementation owner"],
+    "requiredKickoffSections": ["goals", "scope", "risks"],
+    "forbiddenOutputFields": ["reviewerDecision"]
+  }
+}

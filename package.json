@@ -9,7 +9,7 @@
     "validate:fixtures": "node --conditions=react-server --import tsx scripts/validate-fixtures.ts",
     "test": "vitest run",
     "test:e2e": "echo 'Phase 2: browser tests are not implemented yet'",
-    "eval": "echo 'Phase 2: evaluations are not implemented yet'",
+    "eval": "node --conditions=react-server --import tsx evals/run-evals.ts",
     "build": "tsc --noEmit"
   },
   "dependencies": {
