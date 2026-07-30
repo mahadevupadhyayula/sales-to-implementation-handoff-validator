@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceId": "src-approved-solution-design",
+  "dealId": "deal-nhl-2027-001",
+  "sourceType": "solution_design",
+  "title": "Approved solution design v3",
+  "synthetic": true,
+  "version": "3.0-approved",
+  "recordedAt": "2027-01-08T21:10:00Z",
+  "recordedBy": { "name": "Lio Fen", "role": "Solutions Architect", "organization": "Cindercone Systems (fictional)" },
+  "content": {
+    "approval": "Approved for commercial proposal",
+    "architecture": "Single OrbitSignal production tenant with US-hosted primary storage.",
+    "identity": "SAML SSO through customer identity provider; local break-glass administrator retained.",
+    "integrations": [
+      { "system": "FleetAxis", "pattern": "Standard connector", "direction": "Bidirectional", "cadence": "Every 15 minutes" },
+      { "system": "ClearLedger", "pattern": "Managed SFTP export", "direction": "Outbound", "cadence": "Nightly" }
+    ],
+    "dataResidency": "All tenant data, including Canadian operations data, stored and processed in the United States.",
+    "environments": ["Production"],
+    "migration": { "historyMonths": 24, "estimatedRecords": 1200000, "customerProvidesCleanExtract": true },
+    "availability": "Standard 99.9% monthly service objective.",
+    "assumptions": [
+      "FleetAxis standard connector supports all required dispatch fields.",
+      "Customer identity team can configure SAML within five business days.",
+      "Customer will provide one consolidated, cleansed historical extract."
+    ]
+  }
+}

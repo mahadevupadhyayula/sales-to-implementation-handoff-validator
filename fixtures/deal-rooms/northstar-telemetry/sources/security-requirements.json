@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceId": "src-security-requirements",
+  "dealId": "deal-nhl-2027-001",
+  "sourceType": "security_data_requirement",
+  "title": "Security and data requirements addendum",
+  "synthetic": true,
+  "version": "customer-approved-2",
+  "recordedAt": "2027-01-10T15:30:00Z",
+  "recordedBy": { "name": "Orla Quill", "role": "Information Security Lead", "organization": "Northstar Harbor Logistics (fictional)" },
+  "content": {
+    "classification": "Internal operational data; shipment contacts may contain personal information.",
+    "requirements": [
+      { "id": "SEC-01", "text": "Canadian personal information must remain stored and processed in Canada." },
+      { "id": "SEC-02", "text": "All interactive users must use SAML SSO and MFA; local user authentication is prohibited, including break-glass accounts." },
+      { "id": "SEC-03", "text": "Production access logs must be exported to SentinelForge within five minutes." },
+      { "id": "SEC-04", "text": "Non-production environments may not contain unmasked shipment-contact data." }
+    ],
+    "securityReviewStatus": "Conditional approval pending architecture evidence for SEC-01 and SEC-03.",
+    "requiredBeforeProduction": ["Data-flow diagram", "Residency attestation", "Logging integration test evidence"]
+  }
+}

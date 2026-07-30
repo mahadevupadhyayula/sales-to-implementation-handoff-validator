@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceId": "src-crm-opportunity",
+  "dealId": "deal-nhl-2027-001",
+  "sourceType": "crm_opportunity",
+  "title": "CRM opportunity — Northstar Harbor Logistics",
+  "synthetic": true,
+  "version": "closed-won-snapshot-1",
+  "recordedAt": "2027-01-12T18:42:00Z",
+  "recordedBy": { "name": "Mira Solen", "role": "Account Executive", "organization": "Cindercone Systems (fictional)" },
+  "content": {
+    "accountName": "Northstar Harbor Logistics (fictional)",
+    "opportunityName": "OrbitSignal Operations Cloud rollout",
+    "stage": "Closed Won",
+    "closeDate": "2027-01-12",
+    "contractValueUsd": 486000,
+    "termMonths": 24,
+    "productEdition": "Enterprise",
+    "licensedUsers": 850,
+    "regions": ["United States", "Canada"],
+    "targetKickoffDate": "2027-02-01",
+    "targetGoLiveDate": "2027-04-15",
+    "soldIntegrations": ["FleetAxis", "ClearLedger"],
+    "commercialNotes": [
+      "Customer requested expedited rollout.",
+      "AE expects standard FleetAxis connector to cover dispatch synchronization.",
+      "AE expects weekly steering meetings; customer attendees not named."
+    ],
+    "customerExecutiveSponsor": "Inez Marlow — VP, Network Operations",
+    "customerImplementationOwner": null
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1.0.0",
+  "scenarioId": "northstar-telemetry",
+  "title": "Northstar Harbor Logistics — OrbitSignal rollout",
+  "synthetic": true,
+  "dealId": "deal-nhl-2027-001",
+  "status": "closed_won",
+  "asOf": "2027-01-19T17:00:00Z",
+  "sourceRecordIds": [
+    "src-crm-opportunity",
+    "src-executed-order-form",
+    "src-approved-solution-design",
+    "src-security-requirements",
+    "src-discovery-summary",
+    "src-sales-handoff",
+    "src-readiness-checklist"
+  ],
+  "expectedFindingCount": 12,
+  "notice": "Wholly fictional synthetic demonstration data; not a real customer or transaction."
+}

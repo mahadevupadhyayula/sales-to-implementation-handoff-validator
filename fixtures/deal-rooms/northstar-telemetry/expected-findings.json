@@ -1,0 +1,161 @@
+{
+  "schemaVersion": "1.0.0",
+  "scenarioId": "northstar-telemetry",
+  "evaluationOnly": true,
+  "findingCount": 12,
+  "findings": [
+    {
+      "findingId": "FND-001",
+      "category": "schedule_conflict",
+      "severity": "critical",
+      "epistemicState": "conflict",
+      "title": "Sold kickoff and launch dates conflict with the executed schedule",
+      "expectedDisposition": "return_for_clarification",
+      "citations": [
+        { "sourceId": "src-crm-opportunity", "location": "/content/targetKickoffDate", "excerpt": "2027-02-01" },
+        { "sourceId": "src-crm-opportunity", "location": "/content/targetGoLiveDate", "excerpt": "2027-04-15" },
+        { "sourceId": "src-executed-order-form", "location": "/content/servicesStartDate", "excerpt": "2027-02-15" },
+        { "sourceId": "src-executed-order-form", "location": "/content/milestones/2/dueDate", "excerpt": "2027-05-31" }
+      ]
+    },
+    {
+      "findingId": "FND-002",
+      "category": "unscoped_integration",
+      "severity": "critical",
+      "epistemicState": "conflict",
+      "title": "DockPulse integration was promised but is not contracted or designed",
+      "expectedDisposition": "escalate",
+      "citations": [
+        { "sourceId": "src-discovery-summary", "location": "/content/requirementsDiscussed/1", "excerpt": "DockPulse sensor alerts should appear in the shared exception queue." },
+        { "sourceId": "src-sales-handoff", "location": "/content/commitments/1", "excerpt": "DockPulse alerts can be included alongside the two contracted integrations." },
+        { "sourceId": "src-executed-order-form", "location": "/content/includedServices/1", "excerpt": "FleetAxis batch import using vendor standard connector" },
+        { "sourceId": "src-executed-order-form", "location": "/content/includedServices/2", "excerpt": "ClearLedger nightly export" }
+      ]
+    },
+    {
+      "findingId": "FND-003",
+      "category": "security_architecture_conflict",
+      "severity": "critical",
+      "epistemicState": "conflict",
+      "title": "Canadian data-residency requirement conflicts with US-only design",
+      "expectedDisposition": "escalate",
+      "citations": [
+        { "sourceId": "src-security-requirements", "location": "/content/requirements/0/text", "excerpt": "Canadian personal information must remain stored and processed in Canada." },
+        { "sourceId": "src-approved-solution-design", "location": "/content/dataResidency", "excerpt": "All tenant data, including Canadian operations data, stored and processed in the United States." }
+      ]
+    },
+    {
+      "findingId": "FND-004",
+      "category": "security_design_gap",
+      "severity": "high",
+      "epistemicState": "unresolved",
+      "title": "Required SentinelForge access-log export is absent from the design",
+      "expectedDisposition": "return_for_clarification",
+      "citations": [
+        { "sourceId": "src-security-requirements", "location": "/content/requirements/2/text", "excerpt": "Production access logs must be exported to SentinelForge within five minutes." },
+        { "sourceId": "src-readiness-checklist", "location": "/content/items/3/note", "excerpt": "Canadian residency and SentinelForge logging are absent from design." }
+      ]
+    },
+    {
+      "findingId": "FND-005",
+      "category": "identity_conflict",
+      "severity": "high",
+      "epistemicState": "conflict",
+      "title": "Local break-glass account conflicts with the security requirement",
+      "expectedDisposition": "return_for_clarification",
+      "citations": [
+        { "sourceId": "src-approved-solution-design", "location": "/content/identity", "excerpt": "SAML SSO through customer identity provider; local break-glass administrator retained." },
+        { "sourceId": "src-security-requirements", "location": "/content/requirements/1/text", "excerpt": "All interactive users must use SAML SSO and MFA; local user authentication is prohibited, including break-glass accounts." }
+      ]
+    },
+    {
+      "findingId": "FND-006",
+      "category": "missing_owner",
+      "severity": "high",
+      "epistemicState": "unresolved",
+      "title": "No accountable customer implementation owner is named",
+      "expectedDisposition": "return_for_clarification",
+      "citations": [
+        { "sourceId": "src-crm-opportunity", "location": "/content/customerImplementationOwner", "excerpt": "null" },
+        { "sourceId": "src-sales-handoff", "location": "/content/implementationOwner", "excerpt": "TBD after kickoff" },
+        { "sourceId": "src-readiness-checklist", "location": "/content/items/1/note", "excerpt": "No accountable day-to-day owner supplied." }
+      ]
+    },
+    {
+      "findingId": "FND-007",
+      "category": "missing_acceptance_criteria",
+      "severity": "high",
+      "epistemicState": "unresolved",
+      "title": "Milestones lack measurable acceptance criteria and a review window",
+      "expectedDisposition": "return_for_clarification",
+      "citations": [
+        { "sourceId": "src-executed-order-form", "location": "/content/acceptance/criteria", "excerpt": "null" },
+        { "sourceId": "src-executed-order-form", "location": "/content/acceptance/reviewPeriodBusinessDays", "excerpt": "null" },
+        { "sourceId": "src-readiness-checklist", "location": "/content/items/4/note", "excerpt": "No measurable criteria or review window in SOW." }
+      ]
+    },
+    {
+      "findingId": "FND-008",
+      "category": "unsupported_connector_assumption",
+      "severity": "high",
+      "epistemicState": "assumption",
+      "title": "FleetAxis field coverage and near-real-time behavior are unverified",
+      "expectedDisposition": "accept_with_conditions",
+      "citations": [
+        { "sourceId": "src-approved-solution-design", "location": "/content/assumptions/0", "excerpt": "FleetAxis standard connector supports all required dispatch fields." },
+        { "sourceId": "src-discovery-summary", "location": "/content/openQuestions/0", "excerpt": "Does the standard FleetAxis connector expose hazardous-load flag and terminal exception code?" },
+        { "sourceId": "src-readiness-checklist", "location": "/content/items/5/note", "excerpt": "No FleetAxis field sample or historical extract received." }
+      ]
+    },
+    {
+      "findingId": "FND-009",
+      "category": "migration_scope_conflict",
+      "severity": "high",
+      "epistemicState": "conflict",
+      "title": "Five-year migration commitment conflicts with the two-year design",
+      "expectedDisposition": "return_for_clarification",
+      "citations": [
+        { "sourceId": "src-sales-handoff", "location": "/content/commitments/0", "excerpt": "Five years of historical shipment data will be available for launch." },
+        { "sourceId": "src-approved-solution-design", "location": "/content/migration/historyMonths", "excerpt": "24" },
+        { "sourceId": "src-discovery-summary", "location": "/content/requirementsDiscussed/2", "excerpt": "Operations requested five years of history for seasonal analysis." }
+      ]
+    },
+    {
+      "findingId": "FND-010",
+      "category": "unsupported_support_commitment",
+      "severity": "medium",
+      "epistemicState": "conflict",
+      "title": "Sales promised 24/7 launch coverage that the SOW excludes",
+      "expectedDisposition": "escalate",
+      "citations": [
+        { "sourceId": "src-sales-handoff", "location": "/content/commitments/3", "excerpt": "Vendor team will provide 24/7 launch-week coverage." },
+        { "sourceId": "src-executed-order-form", "location": "/content/excludedServices/2", "excerpt": "Twenty-four-hour support coverage" }
+      ]
+    },
+    {
+      "findingId": "FND-011",
+      "category": "environment_gap",
+      "severity": "medium",
+      "epistemicState": "unresolved",
+      "title": "No non-production environment or testing approach is defined",
+      "expectedDisposition": "accept_with_conditions",
+      "citations": [
+        { "sourceId": "src-approved-solution-design", "location": "/content/environments/0", "excerpt": "Production" },
+        { "sourceId": "src-readiness-checklist", "location": "/content/items/7/note", "excerpt": "Design lists production only; testing approach is undefined." },
+        { "sourceId": "src-security-requirements", "location": "/content/requirements/3/text", "excerpt": "Non-production environments may not contain unmasked shipment-contact data." }
+      ]
+    },
+    {
+      "findingId": "FND-012",
+      "category": "success_measure_gap",
+      "severity": "medium",
+      "epistemicState": "unresolved",
+      "title": "Business success has no baseline, target, owner, or test",
+      "expectedDisposition": "accept_with_conditions",
+      "citations": [
+        { "sourceId": "src-discovery-summary", "location": "/content/successStatement", "excerpt": "Inez described success as fewer manual reconciliations, but no baseline, target, measurement owner, or acceptance test was agreed." },
+        { "sourceId": "src-executed-order-form", "location": "/content/acceptance/criteria", "excerpt": "null" }
+      ]
+    }
+  ]
+}

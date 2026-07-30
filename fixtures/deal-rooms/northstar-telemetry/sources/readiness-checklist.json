@@ -1,0 +1,25 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceId": "src-readiness-checklist",
+  "dealId": "deal-nhl-2027-001",
+  "sourceType": "implementation_readiness_checklist",
+  "title": "Implementation readiness checklist",
+  "synthetic": true,
+  "version": "pre-kickoff-1",
+  "recordedAt": "2027-01-19T17:00:00Z",
+  "recordedBy": { "name": "Aya Rook", "role": "Implementation Manager", "organization": "Cindercone Systems (fictional)" },
+  "content": {
+    "items": [
+      { "id": "RDY-01", "label": "Executed commercial documents", "status": "complete", "note": "Order form and SOW executed." },
+      { "id": "RDY-02", "label": "Customer implementation owner named", "status": "blocked", "note": "No accountable day-to-day owner supplied." },
+      { "id": "RDY-03", "label": "Scope and integrations reconciled", "status": "blocked", "note": "DockPulse appears only in discovery and handoff notes." },
+      { "id": "RDY-04", "label": "Security requirements reflected in design", "status": "blocked", "note": "Canadian residency and SentinelForge logging are absent from design." },
+      { "id": "RDY-05", "label": "Milestone acceptance criteria approved", "status": "blocked", "note": "No measurable criteria or review window in SOW." },
+      { "id": "RDY-06", "label": "Customer source-data sample received", "status": "not_started", "note": "No FleetAxis field sample or historical extract received." },
+      { "id": "RDY-07", "label": "Implementation dates reconciled", "status": "blocked", "note": "CRM and sales dates precede contracted services schedule." },
+      { "id": "RDY-08", "label": "Environment plan confirmed", "status": "at_risk", "note": "Design lists production only; testing approach is undefined." }
+    ],
+    "overallStatus": "Not ready for unconditional acceptance",
+    "suggestedOutcome": "return_for_clarification"
+  }
+}

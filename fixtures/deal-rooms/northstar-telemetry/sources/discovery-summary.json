@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourceId": "src-discovery-summary",
+  "dealId": "deal-nhl-2027-001",
+  "sourceType": "discovery_call_summary",
+  "title": "Discovery call summary — operations and data",
+  "synthetic": true,
+  "version": "summary-1",
+  "recordedAt": "2026-12-18T20:00:00Z",
+  "recordedBy": { "name": "Mira Solen", "role": "Account Executive", "organization": "Cindercone Systems (fictional)" },
+  "content": {
+    "meetingDate": "2026-12-18",
+    "participants": [
+      "Inez Marlow — VP, Network Operations",
+      "Pavel Nix — Dispatch Systems Analyst",
+      "Mira Solen — Account Executive",
+      "Lio Fen — Solutions Architect"
+    ],
+    "businessGoals": ["Reduce manual dispatch reconciliation", "Give terminal managers a shared exception queue"],
+    "requirementsDiscussed": [
+      "FleetAxis must synchronize route, driver, hazardous-load flag, and terminal exception code in near real time.",
+      "DockPulse sensor alerts should appear in the shared exception queue.",
+      "Operations requested five years of history for seasonal analysis.",
+      "Terminal managers expect mobile access during overnight shifts."
+    ],
+    "openQuestions": [
+      "Does the standard FleetAxis connector expose hazardous-load flag and terminal exception code?",
+      "Who owns DockPulse and can provide an API specification?",
+      "Who is the day-to-day customer implementation owner?"
+    ],
+    "successStatement": "Inez described success as fewer manual reconciliations, but no baseline, target, measurement owner, or acceptance test was agreed."
+  }
+}
