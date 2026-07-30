@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "dealId": "deal-northstar-001",
+  "organization": "Northstar Health Cooperative (Fictional)",
+  "synthetic": true,
+  "sources": [
+    {
+      "id": "src-agreement-001", "dealId": "deal-northstar-001", "title": "Executed services agreement",
+      "sourceType": "agreement", "authorityLevel": "executed_agreement", "recordDate": "2026-05-01", "synthetic": true,
+      "content": { "scope": "Configure the fictional Aurora intake workflow", "launchTarget": "2026-10-15" }
+    },
+    {
+      "id": "src-design-001", "dealId": "deal-northstar-001", "title": "Approved Aurora solution design",
+      "sourceType": "solution_design", "authorityLevel": "approved_solution_design", "recordDate": "2026-04-20", "synthetic": true,
+      "content": { "integration": "Nightly synthetic-member CSV import" }
+    },
+    {
+      "id": "src-requirements-001", "dealId": "deal-northstar-001", "title": "Customer security requirements",
+      "sourceType": "requirements", "authorityLevel": "security_customer_requirements", "recordDate": "2026-04-10", "synthetic": true,
+      "content": { "authentication": "Fictional identity-provider SSO required" }
+    },
+    {
+      "id": "src-discovery-001", "dealId": "deal-northstar-001", "title": "Discovery workshop record",
+      "sourceType": "discovery", "authorityLevel": "discovery_evidence", "recordDate": "2026-03-25", "synthetic": true,
+      "content": { "volume": "Approximately 2,000 synthetic member records per night" }
+    },
+    {
+      "id": "src-crm-001", "dealId": "deal-northstar-001", "title": "Opportunity handoff fields",
+      "sourceType": "crm_record", "authorityLevel": "crm", "recordDate": "2026-03-20", "synthetic": true,
+      "content": { "launchTarget": "2026-10-01" }
+    },
+    {
+      "id": "src-note-001", "dealId": "deal-northstar-001", "title": "Informal sales note",
+      "sourceType": "note", "authorityLevel": "informal_notes", "recordDate": "2026-03-18", "synthetic": true,
+      "content": { "comment": "Customer may prefer weekly imports; confirm during implementation." }
+    }
+  ]
+}
