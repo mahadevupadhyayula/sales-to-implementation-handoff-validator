@@ -17,7 +17,7 @@ export const evidenceExtractionPrompt = Object.freeze({
     schemaValidity: 1,
     citationCoverage: 1,
     unsupportedAssertions: 0,
-    seededFindingRecall: 0.75,
+    seededFindingRecall: 1,
     reviewerCorrectionRate: 0,
   }),
   instructions: [

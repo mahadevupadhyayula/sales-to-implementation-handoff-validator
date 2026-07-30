@@ -71,6 +71,29 @@ describe("human decision and controlled output", () => {
     }, decidedAt)).toThrow(/must be reviewed/);
   });
 
+  it("rejects a forged approval record and an output without a matching human decision", () => {
+    const database = openDatabase();
+    try {
+      expect(() => persistDecisionPackage(database, {
+        id: "decision-forged",
+        dealId: "deal-1",
+        outcome: "accept",
+        rationale: "Forged approval.",
+        reviewerId: "reviewer-1",
+        decidedAt,
+        explicitlyApproved: false,
+      }, {})).toThrow();
+
+      const result = createControlledOutput({ ...base, outcome: "accept" }, decidedAt);
+      expect(() => persistDecisionPackage(database, result.decision, {
+        ...result.output,
+        decisionId: "decision-other",
+      })).toThrow(/does not match/);
+    } finally {
+      database.close();
+    }
+  });
+
   it("requires rationale and owners for non-accept outcomes", () => {
     expect(() => createControlledOutput({ ...base, outcome: "return_for_clarification", rationale: "" }, decidedAt)).toThrow(/requires a rationale/);
     expect(() => createControlledOutput({

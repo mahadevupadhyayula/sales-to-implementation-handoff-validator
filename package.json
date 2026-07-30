@@ -9,6 +9,8 @@
     "typecheck": "tsc --noEmit",
     "validate:fixtures": "node --conditions=react-server --import tsx scripts/validate-fixtures.ts",
     "test": "vitest run",
+    "test:reconciliation": "vitest run tests/workflow/reconciliation.test.ts tests/workflow/demo-evaluation.test.ts",
+    "test:approval-gate": "vitest run tests/workflow/decision-output.test.ts",
     "test:e2e": "playwright test",
     "eval": "node --conditions=react-server --import tsx evals/run-evals.ts",
     "build": "next build"

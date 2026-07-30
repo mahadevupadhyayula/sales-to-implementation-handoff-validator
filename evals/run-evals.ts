@@ -7,6 +7,7 @@ import { createEvidenceExtractionAdapter } from "../src/server/ai/adapter.js";
 import { evidenceExtractionPrompt } from "../src/server/ai/prompts/registry.js";
 import { loadTelemetryFixture } from "../src/server/fixtures/load.js";
 import { reconcileTelemetryFixture } from "../src/server/reconciliation/telemetry.js";
+import { evaluateDemo } from "./evaluate-demo.js";
 
 const evaluationDatasetSchema = z.object({
   schemaVersion: z.literal("1.0.0"),
@@ -23,26 +24,6 @@ const evaluationDatasetSchema = z.object({
   }),
 });
 
-type Citation = {
-  sourceId: string;
-  location: { jsonPointer?: string; excerpt: string };
-};
-
-function resolvePointer(value: unknown, path: string): unknown {
-  let current = value;
-  for (const rawSegment of path.slice(1).split("/")) {
-    const segment = rawSegment.replaceAll("~1", "/").replaceAll("~0", "~");
-    if (typeof current !== "object" || current === null || !(segment in current)) return undefined;
-    current = (current as Record<string, unknown>)[segment];
-  }
-  return current;
-}
-
-function displayValue(value: unknown): string {
-  if (value === null) return "null";
-  return typeof value === "string" ? value : JSON.stringify(value);
-}
-
 const datasetPath = resolve("evals/implementation-evidence-extraction.dataset.json");
 const dataset = evaluationDatasetSchema.parse(JSON.parse(await readFile(datasetPath, "utf8")));
 const fixture = await loadTelemetryFixture(resolve(dataset.fixtureDirectory));
@@ -57,25 +38,7 @@ try {
   }).extract({ fixture, reconciliation });
 
   const parsed = evidenceExtractionOutputSchema.safeParse(output);
-  const materialItems = [
-    ...output.extractedEvidence,
-    ...output.clarificationQuestions,
-    ...output.kickoffBrief.goals,
-    ...output.kickoffBrief.scope,
-    ...output.kickoffBrief.risks,
-  ];
-  const citations: Citation[] = materialItems.flatMap(({ citations: itemCitations }) => itemCitations);
-  const sources = new Map(fixture.sources.map((source) => [source.sourceId, source]));
-  const unsupportedAssertions = citations.filter((citation) => {
-    const source = sources.get(citation.sourceId);
-    const pointer = citation.location.jsonPointer;
-    if (!source || !pointer) return true;
-    const resolved = resolvePointer(source, pointer);
-    return resolved === undefined || displayValue(resolved) !== citation.location.excerpt;
-  }).length;
-  const expectedFindingIds = new Set(fixture.expectedFindings.findings.map(({ findingId }) => findingId.toLowerCase()));
-  const actualFindingIds = new Set(reconciliation.findings.map(({ id }) => id));
-  const foundExpected = [...expectedFindingIds].filter((id) => actualFindingIds.has(id)).length;
+  const demo = evaluateDemo(fixture, reconciliation, output);
   const reviewFailures = [
     output.extractedEvidence.length < dataset.reviewCriteria.minimumExtractedEvidence,
     output.clarificationQuestions.length < dataset.reviewCriteria.minimumClarificationQuestions,
@@ -88,18 +51,18 @@ try {
 
   const metrics = {
     schemaValidity: parsed.success ? 1 : 0,
-    citationCoverage: materialItems.length === 0
-      ? 0
-      : materialItems.filter(({ citations: itemCitations }) => itemCitations.length > 0).length / materialItems.length,
-    seededFindingRecall: expectedFindingIds.size === 0 ? 1 : foundExpected / expectedFindingIds.size,
-    unsupportedAssertions,
+    citationCoverage: demo.citationCoverage,
+    seededFindingRecall: fixture.expectedFindings.findingCount === 0
+      ? 1
+      : demo.seededGapsFound.length / fixture.expectedFindings.findingCount,
+    unsupportedAssertions: demo.invalidCitations.length + demo.unsupportedConfirmedAssertions.length,
     reviewerCorrectionRate: reviewFailures === 0 ? 0 : reviewFailures / (
       2 +
       dataset.reviewCriteria.requiredUncertaintyTopics.length +
       dataset.reviewCriteria.requiredKickoffSections.length +
       dataset.reviewCriteria.forbiddenOutputFields.length
     ),
-    falsePositiveFindings: [...actualFindingIds].filter((id) => !expectedFindingIds.has(id)).length,
+    falsePositiveFindings: demo.falsePositiveFindings.length,
     unresolvedItemsFound: output.uncertainties.length,
   };
   const thresholds = evidenceExtractionPrompt.acceptanceThresholds;
@@ -109,12 +72,35 @@ try {
     metrics.seededFindingRecall < thresholds.seededFindingRecall && "seededFindingRecall",
     metrics.unsupportedAssertions > thresholds.unsupportedAssertions && "unsupportedAssertions",
     metrics.reviewerCorrectionRate > thresholds.reviewerCorrectionRate && "reviewerCorrectionRate",
+    (demo.falsePositiveFindings.length > 0 || demo.mismatchedFindings.length > 0) && "expectedFindingParity",
   ].filter((name): name is string => Boolean(name));
 
   console.log(JSON.stringify({
     evaluation: `${dataset.promptId}@${dataset.promptVersion}`,
     fixture: fixture.manifest.scenarioId,
+    fixtureVersion: `${fixture.manifest.scenarioId}@${fixture.manifest.schemaVersion}`,
     synthetic: true,
+    prompt: {
+      id: evidenceExtractionPrompt.id,
+      version: evidenceExtractionPrompt.version,
+      model: "deterministic-mock",
+      settings: evidenceExtractionPrompt.modelSettings,
+    },
+    seededGaps: {
+      expected: fixture.expectedFindings.findingCount,
+      found: demo.seededGapsFound,
+      missed: demo.missedSeededGaps,
+      falsePositives: demo.falsePositiveFindings,
+      mismatches: demo.mismatchedFindings,
+    },
+    citations: {
+      coverage: demo.citationCoverage,
+      uncitedMaterialItems: demo.uncitedMaterialItems,
+      invalid: demo.invalidCitations,
+    },
+    unsupportedAssertions: demo.unsupportedConfirmedAssertions,
+    reviewerEdits: [],
+    reviewerEditNote: "No reviewer corrections were required by the deterministic mock evaluation.",
     metrics,
     thresholds,
     status: failures.length === 0 ? "passed" : "failed",
