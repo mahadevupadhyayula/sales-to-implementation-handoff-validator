@@ -43,6 +43,49 @@ export const clarificationTaskSchema = z.object({
 });
 
 export const decisionOutcomeSchema = z.enum(["accept", "accept_with_conditions", "return_for_clarification", "escalate"]);
+export const reviewedFindingInputSchema = z.object({
+  id: identifierSchema,
+  summary: nonEmptyTextSchema,
+  explanation: nonEmptyTextSchema,
+  recommendedNextAction: nonEmptyTextSchema,
+  severity: findingSchema.shape.severity,
+  workstream: findingSchema.shape.workstream,
+  state: epistemicStateSchema,
+  citations: z.array(citationSchema).min(1),
+  owner: nonEmptyTextSchema,
+  reviewed: z.boolean(),
+  originalSummary: nonEmptyTextSchema,
+  reviewNote: z.string().trim().max(2_000),
+});
+
+export const decisionSubmissionSchema = z.object({
+  dealId: identifierSchema,
+  outcome: decisionOutcomeSchema,
+  rationale: z.string().trim().max(4_000),
+  reviewerId: identifierSchema,
+  reviewerName: nonEmptyTextSchema,
+  reviewerRole: nonEmptyTextSchema,
+  findings: z.array(reviewedFindingInputSchema).min(1),
+}).superRefine((submission, context) => {
+  if (submission.outcome !== "accept" && !submission.rationale) {
+    context.addIssue({ code: "custom", path: ["rationale"], message: "This decision requires a rationale" });
+  }
+  const openRequired = submission.findings.filter((finding) =>
+    ["critical", "high", "blocker"].includes(finding.severity) && !finding.reviewed);
+  if (openRequired.length > 0) {
+    context.addIssue({ code: "custom", path: ["findings"], message: "Every critical and high-severity finding must be reviewed before a decision" });
+  }
+  const taskCandidates = submission.findings.filter((finding) => {
+    if (submission.outcome === "accept") return false;
+    if (submission.outcome === "accept_with_conditions") return finding.state !== "confirmed";
+    if (submission.outcome === "return_for_clarification") return finding.state === "unresolved" || finding.state === "assumption";
+    return ["critical", "high", "blocker"].includes(finding.severity) || finding.state === "conflict";
+  });
+  if (taskCandidates.some((finding) => finding.owner.toLowerCase() === "unassigned")) {
+    context.addIssue({ code: "custom", path: ["findings"], message: "Every generated clarification task requires an assigned owner" });
+  }
+});
+
 export const reviewerDecisionSchema = z.object({
   id: identifierSchema, dealId: identifierSchema,
   outcome: decisionOutcomeSchema,
@@ -67,6 +110,20 @@ export const approvedBaselineOutputSchema = z.object({
     unresolvedItems: z.array(baselineEvidenceItemSchema),
     workstreams: z.array(workstreamReadinessSchema),
   }),
+  clarificationTasks: z.array(clarificationTaskSchema),
+  owners: z.array(z.object({
+    role: nonEmptyTextSchema,
+    taskIds: z.array(identifierSchema),
+  })),
+  kickoffBrief: z.object({
+    title: nonEmptyTextSchema,
+    disposition: decisionOutcomeSchema,
+    summary: nonEmptyTextSchema,
+    approvedScope: z.array(nonEmptyTextSchema),
+    conditionsAndRisks: z.array(nonEmptyTextSchema),
+    nextSteps: z.array(nonEmptyTextSchema),
+  }),
+  transmission: z.literal("simulated_only"),
 });
 
 export type Finding = z.infer<typeof findingSchema>;
@@ -74,3 +131,4 @@ export type WorkstreamReadiness = z.infer<typeof workstreamReadinessSchema>;
 export type ClarificationTask = z.infer<typeof clarificationTaskSchema>;
 export type ReviewerDecision = z.infer<typeof reviewerDecisionSchema>;
 export type ApprovedBaselineOutput = z.infer<typeof approvedBaselineOutputSchema>;
+export type DecisionSubmission = z.infer<typeof decisionSubmissionSchema>;

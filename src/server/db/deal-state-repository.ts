@@ -3,6 +3,7 @@ import type Database from "better-sqlite3";
 import { normalizedDealStateSchema, type NormalizedDealState } from "../../domain/schemas/deal-room";
 import type { Citation } from "../../domain/schemas/evidence";
 import { identifierSchema } from "../../domain/schemas/common";
+import { approvedBaselineOutputSchema, reviewerDecisionSchema } from "../../domain/schemas/workflow";
 
 type RecordWithId = { id: string; dealId: string };
 type SqlValue = string | number | bigint | null | Uint8Array;
@@ -49,4 +50,16 @@ function readPayloads(database: Database.Database, table: string, dealId: string
 export function readDealState(database: Database.Database, dealId: string): NormalizedDealState {
   dealId = identifierSchema.parse(dealId);
   return normalizedDealStateSchema.parse({ dealId, sources: readPayloads(database, "sources", dealId), facts: readPayloads(database, "extracted_facts", dealId), findings: readPayloads(database, "findings", dealId), readiness: readPayloads(database, "readiness_workstreams", dealId), clarificationTasks: readPayloads(database, "clarification_tasks", dealId), decisions: readPayloads(database, "reviewer_decisions", dealId), approvedOutputs: readPayloads(database, "approved_baseline_outputs", dealId), promptRuns: readPayloads(database, "prompt_runs", dealId) });
+}
+
+export function persistDecisionPackage(database: Database.Database, rawDecision: unknown, rawOutput: unknown): void {
+  const decision = reviewerDecisionSchema.parse(rawDecision);
+  const output = approvedBaselineOutputSchema.parse(rawOutput);
+  if (output.dealId !== decision.dealId || output.decisionId !== decision.id || output.approvedBy !== decision.reviewerId) {
+    throw new Error("Controlled output does not match its approved reviewer decision");
+  }
+  database.transaction(() => {
+    insertPayload(database, "reviewer_decisions", ["outcome", "reviewer_id", "decided_at", "explicitly_approved"], [decision.outcome, decision.reviewerId, decision.decidedAt, 1], decision);
+    insertPayload(database, "approved_baseline_outputs", ["decision_id", "approved_by", "approved_at"], [output.decisionId, output.approvedBy, output.approvedAt], output);
+  })();
 }

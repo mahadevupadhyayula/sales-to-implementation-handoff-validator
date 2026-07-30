@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { Finding } from "@/domain/schemas/workflow";
+import { useMemo, useState, useTransition } from "react";
+import type { ApprovedBaselineOutput, Finding, ReviewerDecision } from "@/domain/schemas/workflow";
 import type { TelemetryFixtureBundle, TelemetrySource } from "@/domain/schemas/telemetry-fixture";
+import { approveHandoffDecision } from "@/app/handoffs/[dealId]/actions";
 import { ArrowIcon, CheckIcon, FileIcon, ShieldIcon, SparkIcon, XIcon } from "./icons";
 
 type View = "overview" | "report" | "decision";
@@ -66,6 +67,10 @@ export function ReviewWorkspace({ fixture, findings }: { fixture: TelemetryFixtu
   ])));
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [outcome, setOutcome] = useState<string>("");
+  const [rationale, setRationale] = useState("");
+  const [approved, setApproved] = useState<{ decision: ReviewerDecision; output: ApprovedBaselineOutput } | null>(null);
+  const [approvalError, setApprovalError] = useState("");
+  const [isApproving, startApproval] = useTransition();
   const [showOnlyOpen, setShowOnlyOpen] = useState(false);
   const sources = useMemo(() => new Map(fixture.sources.map((source) => [source.sourceId, source])), [fixture.sources]);
   const allDrafts = Object.values(drafts).sort((a, b) => severityRank(a.severity) - severityRank(b.severity) || a.id.localeCompare(b.id));
@@ -75,12 +80,54 @@ export function ReviewWorkspace({ fixture, findings }: { fixture: TelemetryFixtu
   const reviewedTotal = allDrafts.filter((finding) => finding.reviewed).length;
   const selected = selectedId ? drafts[selectedId] : undefined;
   const decisionUnlocked = openRequired === 0;
+  const rationaleRequired = outcome !== "" && outcome !== "accept";
+  const taskCandidate = (finding: FindingDraft) => outcome === "accept_with_conditions"
+    ? finding.state !== "confirmed"
+    : outcome === "return_for_clarification"
+      ? finding.state === "unresolved" || finding.state === "assumption"
+      : outcome === "escalate"
+        ? isRequired(finding) || finding.state === "conflict"
+        : false;
+  const unassignedTaskCount = allDrafts.filter((finding) => taskCandidate(finding) && finding.owner === "Unassigned").length;
+  const canApprove = decisionUnlocked && Boolean(outcome) && (!rationaleRequired || Boolean(rationale.trim())) && unassignedTaskCount === 0 && !approved;
 
   function patchFinding(id: string, patch: Partial<FindingDraft>) {
     setDrafts((current) => ({ ...current, [id]: { ...current[id]!, ...patch } }));
   }
   function openFinding(id: string) {
     setSelectedId(id);
+  }
+  function approveDecision() {
+    setApprovalError("");
+    startApproval(async () => {
+      try {
+        const result = await approveHandoffDecision({
+          dealId: fixture.manifest.dealId,
+          outcome,
+          rationale,
+          reviewerId: "avery-morgan",
+          reviewerName: "Avery Morgan",
+          reviewerRole: "Implementation Manager",
+          findings: allDrafts.map((finding) => ({
+            id: finding.id,
+            summary: finding.summary,
+            explanation: finding.explanation,
+            recommendedNextAction: finding.recommendedNextAction,
+            severity: finding.severity,
+            workstream: finding.workstream,
+            state: finding.state,
+            citations: finding.citations,
+            owner: finding.owner,
+            reviewed: finding.reviewed,
+            originalSummary: findings.find(({ id }) => id === finding.id)?.summary ?? finding.summary,
+            reviewNote: finding.reviewNote,
+          })),
+        });
+        setApproved(result);
+      } catch (error) {
+        setApprovalError(error instanceof Error ? error.message : "The decision could not be approved.");
+      }
+    });
   }
 
   return (
@@ -268,38 +315,46 @@ export function ReviewWorkspace({ fixture, findings }: { fixture: TelemetryFixtu
                 )}
                 <div className="mt-7 space-y-3">
                   {outcomeOptions.map(([id, label, copy]) => (
-                    <button key={id} disabled={!decisionUnlocked} onClick={() => setOutcome(id)} className={`decision-option ${outcome === id ? "selected" : ""}`}>
+                    <button key={id} aria-label={label} disabled={!decisionUnlocked || Boolean(approved)} onClick={() => setOutcome(id)} className={`decision-option ${outcome === id ? "selected" : ""}`}>
                       <span className="decision-radio"><span /></span>
                       <span><span className="block text-sm font-bold">{label}</span><span className="mt-1 block text-xs text-[#74807b]">{copy}</span></span>
                     </button>
                   ))}
                 </div>
-                <label className="mt-7 block text-xs font-bold">Decision rationale <span className="font-normal text-[#87908c]">(required at approval)</span>
-                  <textarea disabled={!decisionUnlocked} className="mt-2 min-h-28 w-full resize-none rounded-xl border border-[#d5d5cc] bg-[#faf9f5] p-3 text-sm font-normal outline-none focus:border-[#6d8e83] disabled:cursor-not-allowed disabled:opacity-55" placeholder="Record the evidence and reasoning behind this decision…" />
+                <label className="mt-7 block text-xs font-bold">Decision rationale <span className="font-normal text-[#87908c]">({rationaleRequired ? "required for this outcome" : "optional for acceptance"})</span>
+                  <textarea value={rationale} onChange={(event) => setRationale(event.target.value)} disabled={!decisionUnlocked || Boolean(approved)} className="mt-2 min-h-28 w-full resize-none rounded-xl border border-[#d5d5cc] bg-[#faf9f5] p-3 text-sm font-normal outline-none focus:border-[#6d8e83] disabled:cursor-not-allowed disabled:opacity-55" placeholder="Record the evidence and reasoning behind this decision…" />
                 </label>
-                <button disabled={!decisionUnlocked || !outcome} className="primary-button mt-5 w-full justify-center">Approve decision & prepare output</button>
+                <button disabled={!canApprove || isApproving} onClick={approveDecision} className="primary-button mt-5 w-full justify-center">{isApproving ? "Approving…" : approved ? "Decision approved" : "Approve decision & prepare output"}</button>
+                {unassignedTaskCount > 0 && <p className="mt-3 text-center text-xs font-semibold text-[#a96922]">{unassignedTaskCount} resulting task{unassignedTaskCount === 1 ? "" : "s"} need an owner before approval.</p>}
+                {approvalError && <p role="alert" className="mt-3 text-center text-xs font-semibold text-[#a64029]">{approvalError}</p>}
                 <p className="mt-3 text-center text-[11px] leading-4 text-[#858e8a]">Approval is an explicit human action. This prototype does not transmit or create records in any external system.</p>
               </div>
               <div className="panel !bg-[#ebe9e0]">
                 <div className="flex items-start justify-between gap-4">
                   <div><p className="eyebrow">Controlled-output preview</p><h2 className="mt-3 text-xl font-bold">Implementation handoff package</h2></div>
-                  <span className="rounded-full border border-[#c8c8bd] bg-white/60 px-3 py-1 text-[10px] font-bold uppercase tracking-wider">Draft · not approved</span>
+                  <span className={`rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${approved ? "border-[#8eb3a4] bg-[#dcebe4] text-[#306c56]" : "border-[#c8c8bd] bg-white/60"}`}>{approved ? "Approved · simulated" : "Draft · not approved"}</span>
                 </div>
                 <div className="mt-6 rounded-xl border border-[#d8d6ca] bg-[#faf9f5] p-5">
                   <div className="flex items-center gap-2 text-[#a84d32]"><SparkIcon className="size-4" /><span className="text-[10px] font-bold uppercase tracking-wider">Internal kickoff brief</span></div>
                   <h3 className="mt-4 font-serif text-2xl">Northstar Harbor Logistics</h3>
                   <p className="mt-2 text-xs leading-5 text-[#727d78]">Prepared from the reviewed evidence set. Final language and task inclusion remain controlled by the implementation manager.</p>
                   <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                    {[["Disposition", outcome ? outcomeOptions.find(([id]) => id === outcome)?.[1] : "Awaiting decision"], ["Open tasks", String(allDrafts.filter((item) => !item.reviewed).length)], ["Evidence", `${fixture.sources.length} source records`]].map(([label, value]) => (
+                    {[["Disposition", outcome ? outcomeOptions.find(([id]) => id === outcome)?.[1] : "Awaiting decision"], ["Clarification tasks", String(approved?.output.clarificationTasks.length ?? 0)], ["Evidence", `${fixture.sources.length} source records`]].map(([label, value]) => (
                       <div key={label} className="rounded-lg bg-[#eeede7] p-3"><p className="text-[9px] font-bold uppercase tracking-wider text-[#8d9490]">{label}</p><p className="mt-1.5 text-xs font-bold">{value}</p></div>
                     ))}
                   </div>
-                  <div className="mt-6 space-y-5">
-                    <div><p className="output-label">Material conditions</p><ul className="mt-2 space-y-2">{allDrafts.filter((item) => item.severity === "critical").map((item) => <li key={item.id} className="flex gap-2 text-xs leading-5"><span className="mt-2 size-1 shrink-0 rounded-full bg-[#b6573b]" />{item.summary}</li>)}</ul></div>
-                    <div><p className="output-label">Clarification tasks</p><ul className="mt-2 space-y-2">{allDrafts.filter((item) => item.state === "unresolved").slice(0, 3).map((item) => <li key={item.id} className="flex justify-between gap-4 border-b border-[#e0dfd7] pb-2 text-xs"><span>{item.recommendedNextAction}</span><span className="shrink-0 font-semibold text-[#76817c]">{item.owner}</span></li>)}</ul></div>
-                  </div>
+                  {!approved ? (
+                    <div className="mt-6 rounded-lg border border-dashed border-[#c9c8bd] p-5 text-center text-xs leading-5 text-[#78827e]">Complete the required review, choose an outcome, and explicitly approve it to generate the controlled package.</div>
+                  ) : (
+                    <div className="mt-6 space-y-5">
+                      <div><p className="output-label">Decision record</p><p className="mt-2 text-xs leading-5"><strong>{outcomeOptions.find(([id]) => id === approved.decision.outcome)?.[1]}</strong> · Avery Morgan · {new Date(approved.decision.decidedAt).toLocaleString()}</p><p className="mt-1 text-xs leading-5 text-[#727d78]">{approved.decision.rationale}</p></div>
+                      <div><p className="output-label">Approved baseline</p><p className="mt-2 text-xs leading-5">{approved.output.baseline.workstreams.length} reviewed workstreams · {approved.output.baseline.assumptions.length} assumptions · {approved.output.baseline.unresolvedItems.length} unresolved/conflicting items retained</p></div>
+                      <div><p className="output-label">Clarification tasks & owners</p>{approved.output.clarificationTasks.length === 0 ? <p className="mt-2 text-xs text-[#727d78]">No clarification tasks are required for this outcome.</p> : <ul className="mt-2 space-y-2">{approved.output.clarificationTasks.map((task) => <li key={task.id} className="flex justify-between gap-4 border-b border-[#e0dfd7] pb-2 text-xs"><span>{task.question}</span><span className="shrink-0 font-semibold text-[#76817c]">{task.ownerRole}</span></li>)}</ul>}</div>
+                      <div><p className="output-label">Internal kickoff brief</p><p className="mt-2 text-xs leading-5">{approved.output.kickoffBrief.summary}</p><ul className="mt-2 space-y-1">{approved.output.kickoffBrief.conditionsAndRisks.slice(0, 4).map((item) => <li key={item} className="text-xs leading-5">• {item}</li>)}</ul></div>
+                    </div>
+                  )}
                 </div>
-                <div className="mt-4 flex items-center gap-2 text-xs text-[#7c8581]"><ShieldIcon className="size-4" /> Preview only. Output remains locked until explicit approval.</div>
+                <div className="mt-4 flex items-center gap-2 text-xs text-[#7c8581]"><ShieldIcon className="size-4" /> {approved ? "Approved preview only. Nothing was sent to an external system." : "Preview only. Output remains locked until explicit approval."}</div>
               </div>
             </div>
           </section>

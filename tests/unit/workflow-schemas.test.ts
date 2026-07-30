@@ -43,6 +43,13 @@ describe("approval and audit boundaries", () => {
       id: "output-1", dealId: "deal-1", decisionId: "decision-1", version: 1, status: "approved",
       approvedBy: "reviewer-2", approvedAt: "2026-06-01T11:00:00Z",
       baseline: { scope: [], assumptions: [], unresolvedItems: [], workstreams: [] },
+      clarificationTasks: [],
+      owners: [],
+      kickoffBrief: {
+        title: "Internal kickoff", disposition: "accept", summary: "Reviewed handoff.",
+        approvedScope: [], conditionsAndRisks: [], nextSteps: [],
+      },
+      transmission: "simulated_only",
     };
     const result = normalizedDealStateSchema.safeParse({
       dealId: "deal-1", sources: [], facts: [], findings: [], readiness: [],

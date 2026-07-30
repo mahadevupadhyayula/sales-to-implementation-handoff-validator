@@ -9,7 +9,7 @@
     "typecheck": "tsc --noEmit",
     "validate:fixtures": "node --conditions=react-server --import tsx scripts/validate-fixtures.ts",
     "test": "vitest run",
-    "test:e2e": "echo 'Phase 2: browser tests are not implemented yet'",
+    "test:e2e": "playwright test",
     "eval": "node --conditions=react-server --import tsx evals/run-evals.ts",
     "build": "next build"
   },
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
+    "@playwright/test": "^1.62.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.0.0",
     "@types/react": "^19.1.0",
