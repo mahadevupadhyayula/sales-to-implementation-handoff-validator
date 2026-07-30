@@ -1,6 +1,6 @@
 import "server-only";
 import { z } from "zod";
-import { evidenceExtractionInputSchema, evidenceExtractionOutputSchema } from "../../../domain/schemas/ai.js";
+import { evidenceExtractionInputSchema, evidenceExtractionOutputSchema } from "../../../domain/schemas/ai";
 
 export const evidenceExtractionPrompt = Object.freeze({
   id: "implementation.evidence-extraction",

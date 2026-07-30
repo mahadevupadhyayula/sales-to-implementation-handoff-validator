@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { identifierSchema, nonEmptyTextSchema, timestampSchema } from "./common.js";
-import { citationSchema, epistemicStateSchema } from "./evidence.js";
+import { identifierSchema, nonEmptyTextSchema, timestampSchema } from "./common";
+import { citationSchema, epistemicStateSchema } from "./evidence";
 
 export const findingSchema = z.object({
   id: identifierSchema, dealId: identifierSchema,

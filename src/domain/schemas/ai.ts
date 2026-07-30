@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { identifierSchema, nonEmptyTextSchema } from "./common.js";
-import { citationSchema, extractedFactSchema } from "./evidence.js";
-import { telemetryFixtureBundleSchema } from "./telemetry-fixture.js";
-import { findingSchema } from "./workflow.js";
+import { identifierSchema, nonEmptyTextSchema } from "./common";
+import { citationSchema, extractedFactSchema } from "./evidence";
+import { telemetryFixtureBundleSchema } from "./telemetry-fixture";
+import { findingSchema } from "./workflow";
 
 const confidenceSchema = z.number().min(0).max(1);
 

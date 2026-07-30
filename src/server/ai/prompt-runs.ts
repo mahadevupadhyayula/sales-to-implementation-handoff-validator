@@ -1,6 +1,6 @@
 import "server-only";
 import type Database from "better-sqlite3";
-import { promptRunAuditSchema, type PromptRunAudit } from "../../domain/schemas/audit.js";
+import { promptRunAuditSchema, type PromptRunAudit } from "../../domain/schemas/audit";
 
 export function persistPromptRun(database: Database.Database, input: unknown): PromptRunAudit {
   const run = promptRunAuditSchema.parse(input);

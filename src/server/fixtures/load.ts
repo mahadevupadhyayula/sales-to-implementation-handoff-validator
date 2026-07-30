@@ -1,8 +1,8 @@
 import "server-only";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
-import { sourceFixtureSchema, type SourceFixture } from "../../domain/schemas/deal-room.js";
-import { telemetryFixtureBundleSchema, type TelemetryFixtureBundle } from "../../domain/schemas/telemetry-fixture.js";
+import { sourceFixtureSchema, type SourceFixture } from "../../domain/schemas/deal-room";
+import { telemetryFixtureBundleSchema, type TelemetryFixtureBundle } from "../../domain/schemas/telemetry-fixture";
 
 export async function loadSourceFixture(path: string): Promise<SourceFixture> {
   const raw: unknown = JSON.parse(await readFile(path, "utf8"));

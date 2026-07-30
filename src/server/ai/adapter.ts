@@ -5,11 +5,11 @@ import {
   evidenceExtractionOutputSchema,
   type EvidenceExtractionInput,
   type EvidenceExtractionOutput,
-} from "../../domain/schemas/ai.js";
-import type { TelemetryFixtureBundle, TelemetrySource } from "../../domain/schemas/telemetry-fixture.js";
-import type { ReconciliationResult } from "../reconciliation/telemetry.js";
-import { evidenceExtractionJsonSchema, evidenceExtractionPrompt } from "./prompts/registry.js";
-import { persistPromptRun } from "./prompt-runs.js";
+} from "../../domain/schemas/ai";
+import type { TelemetryFixtureBundle, TelemetrySource } from "../../domain/schemas/telemetry-fixture";
+import type { ReconciliationResult } from "../reconciliation/telemetry";
+import { evidenceExtractionJsonSchema, evidenceExtractionPrompt } from "./prompts/registry";
+import { persistPromptRun } from "./prompt-runs";
 
 export type AdapterMode = "mock" | "openai";
 

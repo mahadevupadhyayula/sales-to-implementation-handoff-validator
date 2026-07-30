@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root { color-scheme: light; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif; }
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+.font-serif { font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif; }
+.eyebrow { font-size: 10px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; color: #a84d32; }
+.panel { border: 1px solid #dad9d0; border-radius: 16px; background: rgba(255,255,255,.58); padding: 24px; }
+.panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
+.nav-tab { position: relative; padding: 18px 1px 14px; font-size: 13px; font-weight: 650; color: #77817d; }
+.nav-tab::after { content: ""; position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: transparent; }
+.nav-tab.active { color: #18342f; }
+.nav-tab.active::after { background: #b6573b; }
+.status-pill, .readiness-pill, .severity-label { display: inline-flex; align-items: center; border-radius: 999px; font-size: 9px; font-weight: 800; line-height: 1; letter-spacing: .06em; text-transform: uppercase; }
+.status-pill { padding: 5px 7px; }
+.state-conflict { background: #f7ddd3; color: #9c3f27; }
+.state-unresolved { background: #f3e7c9; color: #84601d; }
+.state-assumption { background: #e5e1f1; color: #60527f; }
+.state-confirmed { background: #dcebe4; color: #306c56; }
+.state-ai_suggestion { background: #dfe9ee; color: #3d6677; }
+.readiness-pill { padding: 6px 9px; }
+.readiness-pill.not-ready { background: #f7ddd3; color: #9c3f27; }
+.readiness-pill.conditional { background: #deebe4; color: #39715e; }
+.severity-label { padding: 5px 0; }
+.severity-text-critical, .severity-text-blocker { color: #a64029; }
+.severity-text-high { color: #a96922; }
+.severity-text-medium, .severity-text-warning { color: #6b6f77; }
+.severity-text-low, .severity-text-info { color: #598073; }
+.finding-row { display: flex; width: 100%; align-items: center; gap: 16px; padding: 17px 24px; text-align: left; transition: background .15s ease; }
+.finding-row:hover { background: #fdfcf8; }
+.severity-marker { height: 35px; width: 3px; flex: 0 0 auto; border-radius: 3px; }
+.severity-critical, .severity-blocker { background: #b6573b; }
+.severity-high { background: #d18a45; }
+.severity-medium, .severity-warning { background: #9da19c; }
+.severity-low, .severity-info { background: #6c9285; }
+.review-check { display: grid; width: 21px; height: 21px; place-items: center; border: 1px solid #c5c7c1; border-radius: 50%; color: white; }
+.review-check.done { border-color: #477a68; background: #477a68; }
+.primary-button, .secondary-button { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 11px 17px; font-size: 12px; font-weight: 750; transition: .15s ease; }
+.primary-button { background: #18342f; color: white; }
+.primary-button:hover { background: #285249; }
+.primary-button:disabled { background: #c9ccc7; color: #7f8783; }
+.secondary-button { border: 1px solid #bfc3bc; background: transparent; color: #314a44; }
+.decision-option { display: flex; width: 100%; align-items: center; gap: 13px; border: 1px solid #d7d7ce; border-radius: 12px; padding: 14px; text-align: left; background: rgba(255,255,255,.4); }
+.decision-option:hover:not(:disabled), .decision-option.selected { border-color: #6e8b82; background: #f4f8f5; }
+.decision-option:disabled { opacity: .5; }
+.decision-radio { display: grid; width: 18px; height: 18px; flex: 0 0 auto; place-items: center; border: 1.5px solid #a6aba6; border-radius: 50%; }
+.decision-option.selected .decision-radio { border-color: #3f7563; }
+.decision-option.selected .decision-radio span { width: 8px; height: 8px; border-radius: 50%; background: #3f7563; }
+.output-label { font-size: 10px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #7a8580; }
+.form-control { display: block; width: 100%; margin-top: 8px; border: 1px solid #d4d4cb; border-radius: 10px; background: #fff; padding: 11px 12px; font-size: 13px; outline: none; }
+.form-control:focus { border-color: #65877c; box-shadow: 0 0 0 3px rgba(101,135,124,.12); }
+@media (max-width: 640px) {
+  .panel { padding: 19px; }
+  .finding-row { gap: 11px; padding: 15px 16px; }
+}

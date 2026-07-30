@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { identifierSchema, jsonValueSchema, nonEmptyTextSchema, timestampSchema } from "./common.js";
+import { identifierSchema, jsonValueSchema, nonEmptyTextSchema, timestampSchema } from "./common";
 
 export const promptRunAuditSchema = z.object({
   id: identifierSchema, dealId: identifierSchema,

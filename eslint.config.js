@@ -2,7 +2,7 @@ import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["coverage/", "playwright-report/"] },
+  { ignores: [".next/", "coverage/", "next-env.d.ts", "playwright-report/"] },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   { files: ["**/*.ts"], rules: { "@typescript-eslint/consistent-type-imports": "error" } },

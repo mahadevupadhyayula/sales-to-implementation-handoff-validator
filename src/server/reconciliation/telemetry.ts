@@ -1,7 +1,7 @@
 import "server-only";
-import { extractedFactSchema, type Citation, type ExtractedFact } from "../../domain/schemas/evidence.js";
-import { findingSchema, type Finding } from "../../domain/schemas/workflow.js";
-import type { TelemetryFixtureBundle, TelemetrySource } from "../../domain/schemas/telemetry-fixture.js";
+import { extractedFactSchema, type Citation, type ExtractedFact } from "../../domain/schemas/evidence";
+import { findingSchema, type Finding } from "../../domain/schemas/workflow";
+import type { TelemetryFixtureBundle, TelemetrySource } from "../../domain/schemas/telemetry-fixture";
 
 export const reconciliationAuthorityOrder = [
   "executed_commercial_document",

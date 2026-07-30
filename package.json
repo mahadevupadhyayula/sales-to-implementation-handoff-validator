@@ -4,23 +4,32 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "next dev",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "validate:fixtures": "node --conditions=react-server --import tsx scripts/validate-fixtures.ts",
     "test": "vitest run",
     "test:e2e": "echo 'Phase 2: browser tests are not implemented yet'",
     "eval": "node --conditions=react-server --import tsx evals/run-evals.ts",
-    "build": "tsc --noEmit"
+    "build": "next build"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.0",
     "better-sqlite3": "^12.11.1",
+    "next": "^15.5.0",
+    "postcss": "^8.5.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "server-only": "^0.0.1",
+    "tailwindcss": "^4.1.0",
     "zod": "^4.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.0.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
     "eslint": "^9.0.0",
     "tsx": "^4.0.0",
     "typescript": "^5.9.0",

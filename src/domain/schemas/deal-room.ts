@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { identifierSchema, nonEmptyTextSchema } from "./common.js";
-import { extractedFactSchema, sourceSchema } from "./evidence.js";
-import { approvedBaselineOutputSchema, clarificationTaskSchema, findingSchema, reviewerDecisionSchema, workstreamReadinessSchema } from "./workflow.js";
-import { promptRunAuditSchema } from "./audit.js";
+import { identifierSchema, nonEmptyTextSchema } from "./common";
+import { extractedFactSchema, sourceSchema } from "./evidence";
+import { approvedBaselineOutputSchema, clarificationTaskSchema, findingSchema, reviewerDecisionSchema, workstreamReadinessSchema } from "./workflow";
+import { promptRunAuditSchema } from "./audit";
 
 export const sourceFixtureSchema = z.object({
   schemaVersion: z.literal(1), dealId: identifierSchema, organization: nonEmptyTextSchema,

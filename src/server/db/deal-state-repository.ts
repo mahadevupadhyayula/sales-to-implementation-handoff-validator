@@ -1,8 +1,8 @@
 import "server-only";
 import type Database from "better-sqlite3";
-import { normalizedDealStateSchema, type NormalizedDealState } from "../../domain/schemas/deal-room.js";
-import type { Citation } from "../../domain/schemas/evidence.js";
-import { identifierSchema } from "../../domain/schemas/common.js";
+import { normalizedDealStateSchema, type NormalizedDealState } from "../../domain/schemas/deal-room";
+import type { Citation } from "../../domain/schemas/evidence";
+import { identifierSchema } from "../../domain/schemas/common";
 
 type RecordWithId = { id: string; dealId: string };
 type SqlValue = string | number | bigint | null | Uint8Array;

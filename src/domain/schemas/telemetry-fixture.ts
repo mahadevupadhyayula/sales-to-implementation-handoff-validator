@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { identifierSchema, nonEmptyTextSchema, timestampSchema } from "./common.js";
+import { identifierSchema, nonEmptyTextSchema, timestampSchema } from "./common";
 
 const schemaVersion = z.literal("1.0.0");
 const findingIdSchema = z.string().regex(/^FND-\d{3}$/);
